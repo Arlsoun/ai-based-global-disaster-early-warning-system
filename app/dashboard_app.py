@@ -37,37 +37,120 @@ try:
 
     st.success("Disaster data loaded successfully.")
 
+    st.sidebar.header("Dashboard Filters")
+
+    countries = sorted(df["country"].dropna().unique().tolist())
+    disaster_types = sorted(
+        df["disastertype"].dropna().unique().tolist()
+    )
+    risk_levels = ["HIGH", "MEDIUM", "LOW"]
+
+    selected_countries = st.sidebar.multiselect(
+        "Country",
+        options=countries,
+        default=[],
+    )
+
+    selected_disaster_types = st.sidebar.multiselect(
+        "Disaster Type",
+        options=disaster_types,
+        default=[],
+    )
+
+    selected_risk_levels = st.sidebar.multiselect(
+        "Risk Level",
+        options=risk_levels,
+        default=[],
+    )
+
+    min_year = int(df["year"].min())
+    max_year = int(df["year"].max())
+
+    selected_years = st.sidebar.slider(
+        "Year Range",
+        min_value=min_year,
+        max_value=max_year,
+        value=(min_year, max_year),
+    )
+
+    filtered_df = df.copy()
+
+    if selected_countries:
+        filtered_df = filtered_df[
+            filtered_df["country"].isin(selected_countries)
+        ]
+
+    if selected_disaster_types:
+        filtered_df = filtered_df[
+            filtered_df["disastertype"].isin(
+                selected_disaster_types
+            )
+        ]
+
+    if selected_risk_levels:
+        filtered_df = filtered_df[
+            filtered_df["risk_level"].isin(
+                selected_risk_levels
+            )
+        ]
+
+    filtered_df = filtered_df[
+        filtered_df["year"].between(
+            selected_years[0],
+            selected_years[1],
+        )
+    ]
+
+    st.subheader("Filtered Results")
+
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        st.metric("Total Events", len(df))
+        st.metric(
+            "Total Events",
+            len(filtered_df),
+        )
 
     with col2:
         st.metric(
             "High Risk Events",
-            int((df["risk_level"] == "HIGH").sum()),
+            int(
+                (
+                    filtered_df["risk_level"] == "HIGH"
+                ).sum()
+            ),
         )
 
     with col3:
         st.metric(
             "Medium Risk Events",
-            int((df["risk_level"] == "MEDIUM").sum()),
+            int(
+                (
+                    filtered_df["risk_level"] == "MEDIUM"
+                ).sum()
+            ),
         )
 
     st.subheader("Risk Distribution")
 
-    fig = create_risk_distribution_chart(df)
-    st.plotly_chart(fig, use_container_width=True)
+    fig = create_risk_distribution_chart(filtered_df)
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+    )
 
     st.subheader("Global Disaster Map")
 
-    map_fig = create_disaster_map(df)
-    st.plotly_chart(map_fig, use_container_width=True)
+    map_fig = create_disaster_map(filtered_df)
+    st.plotly_chart(
+        map_fig,
+        use_container_width=True,
+    )
 
     st.subheader("Disaster Events")
 
     st.dataframe(
-        df,
+        filtered_df,
         use_container_width=True,
     )
 
