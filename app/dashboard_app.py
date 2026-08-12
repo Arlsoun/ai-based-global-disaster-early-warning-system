@@ -39,10 +39,14 @@ try:
 
     st.sidebar.header("Dashboard Filters")
 
-    countries = sorted(df["country"].dropna().unique().tolist())
+    countries = sorted(
+        df["country"].dropna().unique().tolist()
+    )
+
     disaster_types = sorted(
         df["disastertype"].dropna().unique().tolist()
     )
+
     risk_levels = ["HIGH", "MEDIUM", "LOW"]
 
     selected_countries = st.sidebar.multiselect(
@@ -101,6 +105,18 @@ try:
         )
     ]
 
+    high_risk_count = int(
+        (filtered_df["risk_level"] == "HIGH").sum()
+    )
+
+    medium_risk_count = int(
+        (filtered_df["risk_level"] == "MEDIUM").sum()
+    )
+
+    low_risk_count = int(
+        (filtered_df["risk_level"] == "LOW").sum()
+    )
+
     st.subheader("Filtered Results")
 
     col1, col2, col3 = st.columns(3)
@@ -114,26 +130,41 @@ try:
     with col2:
         st.metric(
             "High Risk Events",
-            int(
-                (
-                    filtered_df["risk_level"] == "HIGH"
-                ).sum()
-            ),
+            high_risk_count,
         )
 
     with col3:
         st.metric(
             "Medium Risk Events",
-            int(
-                (
-                    filtered_df["risk_level"] == "MEDIUM"
-                ).sum()
-            ),
+            medium_risk_count,
+        )
+
+    if high_risk_count > 0:
+        st.error(
+            f"⚠️ HIGH RISK WARNING: {high_risk_count:,} "
+            "high-risk disaster events detected."
+        )
+    else:
+        st.success(
+            "✅ No high-risk disaster events detected."
+        )
+
+    if medium_risk_count > 0:
+        st.warning(
+            f"⚠️ {medium_risk_count:,} medium-risk "
+            "disaster events detected."
+        )
+
+    if low_risk_count > 0:
+        st.info(
+            f"ℹ️ {low_risk_count:,} low-risk "
+            "disaster events detected."
         )
 
     st.subheader("Risk Distribution")
 
     fig = create_risk_distribution_chart(filtered_df)
+
     st.plotly_chart(
         fig,
         use_container_width=True,
@@ -142,6 +173,7 @@ try:
     st.subheader("Global Disaster Map")
 
     map_fig = create_disaster_map(filtered_df)
+
     st.plotly_chart(
         map_fig,
         use_container_width=True,
