@@ -9,12 +9,17 @@ sys.path.insert(0, str(PROJECT_ROOT))
 from src.data_loader import load_disaster_data
 from src.preprocess import preprocess_disaster_data
 from src.disaster_model import calculate_risk_score
-from src.ml_model import train_risk_model, predict_risk
+from src.ml_model import (
+    train_risk_model,
+    predict_risk,
+    evaluate_risk_model,
+)
 from src.early_warning import assign_risk_level
 from src.visualization import (
     create_risk_distribution_chart,
     create_disaster_map,
 )
+
 
 st.set_page_config(
     page_title="AI-Based Global Disaster Early-Warning System",
@@ -22,8 +27,12 @@ st.set_page_config(
     layout="wide",
 )
 
+
 st.title("🌍 AI-Based Global Disaster Early-Warning System")
-st.caption("Disaster-event analysis and early-warning risk assessment")
+st.caption(
+    "Disaster-event analysis and early-warning risk assessment"
+)
+
 
 try:
     df = load_disaster_data()
@@ -31,23 +40,36 @@ try:
     df = calculate_risk_score(df)
 
     model = train_risk_model(df)
-    df = predict_risk(model, df)
+    evaluation = evaluate_risk_model(model, df)
 
+    df = predict_risk(model, df)
     df = assign_risk_level(df)
 
-    st.success("Disaster data loaded successfully.")
+    st.success(
+        "Disaster data loaded successfully."
+    )
 
     st.sidebar.header("Dashboard Filters")
 
     countries = sorted(
-        df["country"].dropna().unique().tolist()
+        df["country"]
+        .dropna()
+        .unique()
+        .tolist()
     )
 
     disaster_types = sorted(
-        df["disastertype"].dropna().unique().tolist()
+        df["disastertype"]
+        .dropna()
+        .unique()
+        .tolist()
     )
 
-    risk_levels = ["HIGH", "MEDIUM", "LOW"]
+    risk_levels = [
+        "HIGH",
+        "MEDIUM",
+        "LOW",
+    ]
 
     selected_countries = st.sidebar.multiselect(
         "Country",
@@ -81,7 +103,9 @@ try:
 
     if selected_countries:
         filtered_df = filtered_df[
-            filtered_df["country"].isin(selected_countries)
+            filtered_df["country"].isin(
+                selected_countries
+            )
         ]
 
     if selected_disaster_types:
@@ -105,18 +129,6 @@ try:
         )
     ]
 
-    high_risk_count = int(
-        (filtered_df["risk_level"] == "HIGH").sum()
-    )
-
-    medium_risk_count = int(
-        (filtered_df["risk_level"] == "MEDIUM").sum()
-    )
-
-    low_risk_count = int(
-        (filtered_df["risk_level"] == "LOW").sum()
-    )
-
     st.subheader("Filtered Results")
 
     col1, col2, col3 = st.columns(3)
@@ -130,40 +142,56 @@ try:
     with col2:
         st.metric(
             "High Risk Events",
-            high_risk_count,
+            int(
+                (
+                    filtered_df["risk_level"]
+                    == "HIGH"
+                ).sum()
+            ),
         )
 
     with col3:
         st.metric(
             "Medium Risk Events",
-            medium_risk_count,
+            int(
+                (
+                    filtered_df["risk_level"]
+                    == "MEDIUM"
+                ).sum()
+            ),
         )
 
-    if high_risk_count > 0:
-        st.error(
-            f"⚠️ HIGH RISK WARNING: {high_risk_count:,} "
-            "high-risk disaster events detected."
-        )
-    else:
-        st.success(
-            "✅ No high-risk disaster events detected."
+    st.subheader("Model Evaluation")
+
+    eval_col1, eval_col2, eval_col3 = st.columns(3)
+
+    with eval_col1:
+        st.metric(
+            "MAE",
+            f"{evaluation['mae']:.4f}",
         )
 
-    if medium_risk_count > 0:
-        st.warning(
-            f"⚠️ {medium_risk_count:,} medium-risk "
-            "disaster events detected."
+    with eval_col2:
+        st.metric(
+            "RMSE",
+            f"{evaluation['rmse']:.4f}",
         )
 
-    if low_risk_count > 0:
-        st.info(
-            f"ℹ️ {low_risk_count:,} low-risk "
-            "disaster events detected."
+    with eval_col3:
+        st.metric(
+            "R² Score",
+            f"{evaluation['r2']:.4f}",
         )
+
+    st.caption(
+        "Evaluation metrics are calculated using the full disaster dataset."
+    )
 
     st.subheader("Risk Distribution")
 
-    fig = create_risk_distribution_chart(filtered_df)
+    fig = create_risk_distribution_chart(
+        filtered_df
+    )
 
     st.plotly_chart(
         fig,
@@ -172,7 +200,9 @@ try:
 
     st.subheader("Global Disaster Map")
 
-    map_fig = create_disaster_map(filtered_df)
+    map_fig = create_disaster_map(
+        filtered_df
+    )
 
     st.plotly_chart(
         map_fig,
