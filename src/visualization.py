@@ -26,3 +26,36 @@ def create_risk_distribution_chart(df: pd.DataFrame):
     )
 
     return fig
+
+
+def create_disaster_map(df: pd.DataFrame):
+    """Create a geographic map showing disaster-event locations."""
+
+    map_data = df.dropna(
+        subset=["latitude", "longitude"]
+    ).copy()
+
+    fig = px.scatter_geo(
+        map_data,
+        lat="latitude",
+        lon="longitude",
+        color="risk_level",
+        hover_name="country",
+        hover_data={
+            "disastertype": True,
+            "year": True,
+            "risk_level": True,
+            "latitude": False,
+            "longitude": False,
+        },
+        title="Global Disaster Events",
+    )
+
+    fig.update_geos(
+        showcountries=True,
+        showcoastlines=True,
+        showland=True,
+        fitbounds="locations",
+    )
+
+    return fig
