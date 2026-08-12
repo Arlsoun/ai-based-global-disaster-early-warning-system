@@ -7,9 +7,9 @@ def assign_risk_level(df: pd.DataFrame) -> pd.DataFrame:
     data = df.copy()
 
     def get_level(score):
-        if score >= 2:
+        if score >= 0.67:
             return "HIGH"
-        if score == 1:
+        if score >= 0.34:
             return "MEDIUM"
         return "LOW"
 

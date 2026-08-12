@@ -6,15 +6,20 @@ from src.disaster_model import calculate_risk_score
 def test_calculate_risk_score():
     df = pd.DataFrame(
         {
-            "year": [2020, 2021],
-            "latitude": [40.0, 10.0],
-            "longitude": [80.0, 20.0],
+            "country": ["Indonesia", "Japan", "Indonesia"],
+            "disastertype": ["flood", "earthquake", "flood"],
+            "year": [2020, 2021, 2022],
         }
     )
 
     result = calculate_risk_score(df)
 
     assert "risk_score" in result.columns
-    assert len(result) == 2
-    assert result["risk_score"].iloc[0] == 2
-    assert result["risk_score"].iloc[1] == 0
+    assert "country_frequency_score" in result.columns
+    assert "disaster_frequency_score" in result.columns
+    assert "country_disaster_score" in result.columns
+    assert "recency_score" in result.columns
+
+    assert len(result) == 3
+    assert result["risk_score"].notna().all()
+    assert (result["risk_score"] >= 0).all()
