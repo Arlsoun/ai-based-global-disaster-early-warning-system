@@ -1,8 +1,16 @@
+import sys
+from pathlib import Path
+
 import streamlit as st
+
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.data_loader import load_disaster_data
 from src.preprocess import preprocess_disaster_data
 from src.disaster_model import calculate_risk_score
+from src.ml_model import train_risk_model, predict_risk
 from src.early_warning import assign_risk_level
 from src.visualization import create_risk_distribution_chart
 
@@ -13,13 +21,19 @@ st.set_page_config(
     layout="wide",
 )
 
+
 st.title("🌍 AI-Based Global Disaster Early-Warning System")
 st.caption("Disaster-event analysis and early-warning risk assessment")
+
 
 try:
     df = load_disaster_data()
     df = preprocess_disaster_data(df)
     df = calculate_risk_score(df)
+
+    model = train_risk_model(df)
+    df = predict_risk(model, df)
+
     df = assign_risk_level(df)
 
     st.success("Disaster data loaded successfully.")
