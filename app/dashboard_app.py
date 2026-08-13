@@ -30,7 +30,7 @@ st.set_page_config(
 
 
 # ============================================================
-# CUSTOM APPLICATION STYLE
+# DARK APPLICATION STYLE
 # ============================================================
 
 st.markdown(
@@ -38,16 +38,33 @@ st.markdown(
     <style>
 
     /* ========================================================
-       GLOBAL APPLICATION
+       GLOBAL BACKGROUND
        ======================================================== */
 
+    html,
+    body,
+    [data-testid="stApp"],
+    [data-testid="stAppViewContainer"],
+    [data-testid="stMain"],
+    .main,
     .stApp {
-        background-color: #F8FAFC;
+        background-color: #07111F !important;
+        color: #F8FAFC !important;
     }
 
-    .main {
-        background-color: #F8FAFC;
+    [data-testid="stHeader"] {
+        background-color: #07111F !important;
     }
+
+    [data-testid="stToolbar"] {
+        background-color: #07111F !important;
+    }
+
+    /* Main content */
+    [data-testid="stMainBlockContainer"] {
+        background-color: #07111F !important;
+    }
+
 
     /* ========================================================
        SIDEBAR
@@ -58,17 +75,15 @@ st.markdown(
             180deg,
             #0F172A 0%,
             #172554 100%
-        );
+        ) !important;
+    }
+
+    section[data-testid="stSidebar"] > div {
+        background: transparent !important;
     }
 
     section[data-testid="stSidebar"] * {
         color: #F8FAFC !important;
-    }
-
-    section[data-testid="stSidebar"] h1,
-    section[data-testid="stSidebar"] h2,
-    section[data-testid="stSidebar"] h3 {
-        color: #FFFFFF !important;
     }
 
     section[data-testid="stSidebar"] label {
@@ -76,22 +91,84 @@ st.markdown(
         font-weight: 600;
     }
 
-    section[data-testid="stSidebar"] [data-baseweb="select"] > div {
-        background-color: #1E293B !important;
-        border: 1px solid #475569 !important;
-        border-radius: 8px;
+    section[data-testid="stSidebar"] input {
+        background-color: #0D1B2E !important;
+        color: #F8FAFC !important;
+        caret-color: #38BDF8 !important;
     }
 
-    section[data-testid="stSidebar"] input {
+
+    /* ========================================================
+       SELECTBOX AND MULTISELECT
+       ======================================================== */
+
+    div[data-baseweb="select"] > div {
+        background-color: #0D1B2E !important;
+        border: 1px solid #475569 !important;
+        border-radius: 8px !important;
+        color: #F8FAFC !important;
+    }
+
+    div[data-baseweb="select"] input {
+        background-color: transparent !important;
+        color: #F8FAFC !important;
+        caret-color: #38BDF8 !important;
+    }
+
+    div[data-baseweb="select"] input::placeholder {
+        color: #94A3B8 !important;
+    }
+
+    div[data-baseweb="select"] [data-baseweb="tag"] {
+        background-color: #1E3A5F !important;
+        color: #F8FAFC !important;
+    }
+
+    div[data-baseweb="select"] [data-baseweb="tag"] span {
+        color: #F8FAFC !important;
+    }
+
+    div[data-baseweb="select"] svg {
+        fill: #CBD5E1 !important;
+    }
+
+    /* Dropdown menu */
+
+    [data-baseweb="popover"] {
+        background-color: #0D1B2E !important;
+    }
+
+    [data-baseweb="popover"] > div {
+        background-color: #0D1B2E !important;
+    }
+
+    [data-baseweb="menu"] {
+        background-color: #0D1B2E !important;
+        color: #F8FAFC !important;
+    }
+
+    li[role="option"] {
+        background-color: #0D1B2E !important;
+        color: #F8FAFC !important;
+    }
+
+    li[role="option"]:hover {
+        background-color: #1E3A5F !important;
         color: #FFFFFF !important;
     }
+
+    li[role="option"][aria-selected="true"] {
+        background-color: #1E3A5F !important;
+        color: #FFFFFF !important;
+    }
+
 
     /* ========================================================
        HEADER
        ======================================================== */
 
     .main-title {
-        color: #0F172A;
+        color: #F8FAFC !important;
         font-size: 2.4rem;
         font-weight: 800;
         letter-spacing: -0.5px;
@@ -99,41 +176,43 @@ st.markdown(
     }
 
     .subtitle {
-        color: #64748B;
+        color: #CBD5E1 !important;
         font-size: 1.05rem;
         margin-bottom: 1.5rem;
     }
 
     .section-title {
-        color: #1E293B;
+        color: #F8FAFC !important;
         font-size: 1.35rem;
         font-weight: 750;
         margin-top: 1.4rem;
         margin-bottom: 0.9rem;
     }
 
+
     /* ========================================================
        METRIC CARDS
        ======================================================== */
 
     div[data-testid="metric-container"] {
-        background-color: #FFFFFF;
-        border: 1px solid #E2E8F0;
+        background-color: #0D1B2E !important;
+        border: 1px solid #334155 !important;
         border-radius: 14px;
         padding: 18px;
-        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.07);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
     }
 
     div[data-testid="metric-container"] label {
-        color: #64748B !important;
+        color: #CBD5E1 !important;
         font-weight: 650;
     }
 
     div[data-testid="metric-container"]
     [data-testid="stMetricValue"] {
-        color: #0F172A !important;
+        color: #F8FAFC !important;
         font-weight: 800;
     }
+
 
     /* ========================================================
        RISK STATUS
@@ -142,132 +221,156 @@ st.markdown(
     .risk-high {
         padding: 1rem 1.1rem;
         border-radius: 12px;
-        background-color: #FEF2F2;
-        border-left: 6px solid #DC2626;
-        color: #991B1B;
+        background-color: #3B1115 !important;
+        border-left: 6px solid #EF4444;
+        color: #FCA5A5 !important;
         margin-bottom: 0.8rem;
-        box-shadow: 0 2px 7px rgba(220, 38, 38, 0.08);
     }
 
     .risk-medium {
         padding: 1rem 1.1rem;
         border-radius: 12px;
-        background-color: #FFF7ED;
-        border-left: 6px solid #EA580C;
-        color: #9A3412;
+        background-color: #3A1F0B !important;
+        border-left: 6px solid #F97316;
+        color: #FDBA74 !important;
         margin-bottom: 0.8rem;
-        box-shadow: 0 2px 7px rgba(234, 88, 12, 0.08);
     }
 
     .risk-low {
         padding: 1rem 1.1rem;
         border-radius: 12px;
-        background-color: #F0FDF4;
-        border-left: 6px solid #16A34A;
-        color: #166534;
+        background-color: #0B2A1A !important;
+        border-left: 6px solid #22C55E;
+        color: #86EFAC !important;
         margin-bottom: 0.8rem;
-        box-shadow: 0 2px 7px rgba(22, 163, 74, 0.08);
     }
 
     .info-box {
         padding: 1rem 1.1rem;
         border-radius: 12px;
-        background-color: #EFF6FF;
-        border-left: 6px solid #2563EB;
-        color: #1E40AF;
+        background-color: #0B2340 !important;
+        border-left: 6px solid #38BDF8;
+        color: #BAE6FD !important;
         margin-bottom: 0.8rem;
     }
 
+
     /* ========================================================
-       MODEL EVALUATION CARDS
+       MODEL EVALUATION
        ======================================================== */
 
     .evaluation-card {
-        background-color: #FFFFFF;
-        border: 1px solid #E2E8F0;
+        background-color: #0D1B2E !important;
+        border: 1px solid #334155 !important;
         border-radius: 14px;
         padding: 20px;
         text-align: center;
-        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.07);
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
     }
 
     .evaluation-title {
-        color: #64748B;
+        color: #CBD5E1 !important;
         font-size: 0.9rem;
         font-weight: 650;
     }
 
     .evaluation-value {
-        color: #2563EB;
+        color: #38BDF8 !important;
         font-size: 1.9rem;
         font-weight: 800;
         margin-top: 6px;
     }
 
+
     /* ========================================================
-       STREAMLIT ALERTS
+       ALERTS
        ======================================================== */
 
     div[data-testid="stAlert"] {
         border-radius: 10px;
     }
 
-    /* ========================================================
-       SELECT BOXES
-       ======================================================== */
-
-    div[data-baseweb="select"] > div {
-        background-color: #FFFFFF;
-        border: 1px solid #CBD5E1;
-        border-radius: 8px;
-    }
 
     /* ========================================================
        DATAFRAME
        ======================================================== */
 
     div[data-testid="stDataFrame"] {
-        border: 1px solid #E2E8F0;
+        background-color: #0D1B2E !important;
+        border: 1px solid #334155 !important;
         border-radius: 12px;
         overflow: hidden;
-        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
     }
+
+
+    /* ========================================================
+       PLOTLY
+       ======================================================== */
+
+    div[data-testid="stPlotlyChart"] {
+        background-color: #0D1B2E !important;
+        border: 1px solid #334155 !important;
+        border-radius: 14px;
+        padding: 8px;
+    }
+
 
     /* ========================================================
        BUTTONS
        ======================================================== */
 
     .stButton > button {
-        background-color: #2563EB;
-        color: #FFFFFF;
+        background-color: #2563EB !important;
+        color: #FFFFFF !important;
         border: none;
         border-radius: 8px;
         font-weight: 650;
     }
 
     .stButton > button:hover {
-        background-color: #1D4ED8;
-        color: #FFFFFF;
+        background-color: #1D4ED8 !important;
+        color: #FFFFFF !important;
     }
 
+
     /* ========================================================
-       DIVIDERS
+       TEXT
+       ======================================================== */
+
+    .stMarkdown,
+    .stCaption,
+    p,
+    label {
+        color: #F8FAFC !important;
+    }
+
+    input,
+    textarea {
+        background-color: #0D1B2E !important;
+        color: #F8FAFC !important;
+        border-color: #475569 !important;
+    }
+
+
+    /* ========================================================
+       SLIDER
+       ======================================================== */
+
+    [data-testid="stSlider"] {
+        color: #F8FAFC !important;
+    }
+
+    [data-testid="stSlider"] label {
+        color: #E2E8F0 !important;
+    }
+
+
+    /* ========================================================
+       DIVIDER
        ======================================================== */
 
     hr {
-        border-color: #E2E8F0;
-    }
-
-    /* ========================================================
-       PLOTLY CONTAINERS
-       ======================================================== */
-
-    div[data-testid="stPlotlyChart"] {
-        background-color: #FFFFFF;
-        border: 1px solid #E2E8F0;
-        border-radius: 14px;
-        padding: 8px;
-        box-shadow: 0 3px 10px rgba(15, 23, 42, 0.05);
+        border-color: #334155 !important;
     }
 
     </style>
@@ -300,6 +403,7 @@ st.markdown(
 
 
 try:
+
     # ========================================================
     # DATA PROCESSING
     # ========================================================
@@ -314,9 +418,7 @@ try:
     df = predict_risk(model, df)
     df = assign_risk_level(df)
 
-    st.success(
-        "Disaster data loaded successfully."
-    )
+    st.success("Disaster data loaded successfully.")
 
 
     # ========================================================
@@ -386,9 +488,7 @@ try:
 
     if selected_countries:
         filtered_df = filtered_df[
-            filtered_df["country"].isin(
-                selected_countries
-            )
+            filtered_df["country"].isin(selected_countries)
         ]
 
     if selected_disaster_types:
@@ -425,21 +525,15 @@ try:
     total_events = len(filtered_df)
 
     high_risk = int(
-        (
-            filtered_df["risk_level"] == "HIGH"
-        ).sum()
+        (filtered_df["risk_level"] == "HIGH").sum()
     )
 
     medium_risk = int(
-        (
-            filtered_df["risk_level"] == "MEDIUM"
-        ).sum()
+        (filtered_df["risk_level"] == "MEDIUM").sum()
     )
 
     low_risk = int(
-        (
-            filtered_df["risk_level"] == "LOW"
-        ).sum()
+        (filtered_df["risk_level"] == "LOW").sum()
     )
 
     col1, col2, col3, col4 = st.columns(4)
@@ -592,9 +686,7 @@ try:
         unsafe_allow_html=True,
     )
 
-    fig = create_risk_distribution_chart(
-        filtered_df
-    )
+    fig = create_risk_distribution_chart(filtered_df)
 
     st.plotly_chart(
         fig,
@@ -611,9 +703,7 @@ try:
         unsafe_allow_html=True,
     )
 
-    map_fig = create_disaster_map(
-        filtered_df
-    )
+    map_fig = create_disaster_map(filtered_df)
 
     st.plotly_chart(
         map_fig,
@@ -646,12 +736,62 @@ try:
         if column in filtered_df.columns
     ]
 
+    column_config = {
+        "id": st.column_config.TextColumn(
+            "ID",
+            width="medium",
+        ),
+        "country": st.column_config.TextColumn(
+            "Country",
+            width="medium",
+        ),
+        "year": st.column_config.NumberColumn(
+            "Year",
+            width="small",
+        ),
+        "disastertype": st.column_config.TextColumn(
+            "Disaster Type",
+            width="medium",
+        ),
+        "latitude": st.column_config.NumberColumn(
+            "Latitude",
+            format="%.4f",
+            width="medium",
+        ),
+        "longitude": st.column_config.NumberColumn(
+            "Longitude",
+            format="%.4f",
+            width="medium",
+        ),
+        "risk_score": st.column_config.NumberColumn(
+            "Risk Score",
+            format="%.4f",
+            width="medium",
+        ),
+        "predicted_risk_score": st.column_config.NumberColumn(
+            "Predicted Risk Score",
+            format="%.4f",
+            width="large",
+        ),
+        "risk_level": st.column_config.TextColumn(
+            "Risk Level",
+            width="large",
+        ),
+    }
+
     st.dataframe(
         filtered_df[display_columns],
         use_container_width=True,
         hide_index=True,
+        column_config=column_config,
+        height=600,
     )
 
 
 except FileNotFoundError as error:
     st.error(str(error))
+
+except Exception as error:
+    st.error(
+        f"An unexpected error occurred: {error}"
+    )
